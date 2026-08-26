@@ -80,4 +80,4 @@ Or install permanently: `pip install eurovalidate-mcp` → `eurovalidate-mcp`.
 MIT
 
 ---
-mcp-name: io.github.nitrych/eurovalidate-mcp
+mcp-name: io.github.Nitrych/eurovalidate-mcp

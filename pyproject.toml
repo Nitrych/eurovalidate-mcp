@@ -1,6 +1,6 @@
 [project]
 name = "eurovalidate-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "MCP server for EuroValidate — validate EU VAT numbers (VIES), IBANs, EORI customs numbers and look up company data from LLM agents"
 readme = "README.md"
 license = "MIT"

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.nitrych/eurovalidate-mcp",
+  "description": "Validate EU VAT numbers (VIES), IBANs and EORI customs numbers, look up company data (GLEIF) and VAT rates — reliable, cache-first EU business data validation for agents",
+  "repository": {
+    "url": "https://github.com/Nitrych/eurovalidate-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "websiteUrl": "https://eurovalidate.com",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "eurovalidate-mcp",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "EUROVALIDATE_API_KEY",
+          "description": "EuroValidate API key — free at https://eurovalidate.com (100 requests/month, no card)",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

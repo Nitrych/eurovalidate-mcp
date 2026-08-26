@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.nitrych/eurovalidate-mcp",
-  "description": "Validate EU VAT numbers (VIES), IBANs and EORI customs numbers, look up company data (GLEIF) and VAT rates — reliable, cache-first EU business data validation for agents",
+  "description": "Validate EU VAT numbers (VIES), IBANs and EORI, look up company data (GLEIF) and VAT rates",
   "repository": {
     "url": "https://github.com/Nitrych/eurovalidate-mcp",
     "source": "github"

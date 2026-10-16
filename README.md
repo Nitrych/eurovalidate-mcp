@@ -68,6 +68,15 @@ Or install permanently: `pip install eurovalidate-mcp` → `eurovalidate-mcp`.
 - Every response carries `confidence: HIGH|MEDIUM|LOW|UNKNOWN` and the upstream `source`, so agents can reason about data freshness when a government service is down.
 - Free tier: 100 requests/month. Paid plans from €19/mo (500,000 requests/month) at [eurovalidate.com](https://eurovalidate.com).
 
+## Agent Skill
+
+[`skills/eu-business-validation/SKILL.md`](skills/eu-business-validation/SKILL.md) is a portable [Agent Skill](https://agentskills.io) that teaches an agent *when* to validate, how to read `status`/`confidence` correctly (e.g. `unavailable` ≠ `invalid`), the DE/ES/EL/XI gotchas, and how to write checkout/KYB code that never blocks a sale when VIES is down. It works with this MCP server or falls back to plain REST calls.
+
+```bash
+# Claude Code (personal skills)
+mkdir -p ~/.claude/skills && cp -r skills/eu-business-validation ~/.claude/skills/
+```
+
 ## Environment variables
 
 | Variable | Required | Default |

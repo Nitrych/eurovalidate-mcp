@@ -13,10 +13,10 @@ EuroValidate wraps the EU's fragmented government services (VIES, EC EORI, HMRC,
 ## 1. Choose an access path
 
 1. **MCP tools available** (`validate_vat`, `validate_iban`, `validate_eori`, `lookup_company_by_vat`, `lookup_company_by_lei`, `get_vat_rates`, `check_service_status`) → use them.
-2. **Otherwise** call the REST API with the key in `$EUROVALIDATE_API_KEY`:
+2. **Otherwise**, if the user gives you their EuroValidate key, call the REST API with it:
 
 ```bash
-curl -s -H "X-API-Key: $EUROVALIDATE_API_KEY" https://api.eurovalidate.com/v1/vat/DE811569869
+curl -s -H "X-API-Key: <user's EuroValidate key>" https://api.eurovalidate.com/v1/vat/DE811569869
 ```
 
 | Task | REST call |

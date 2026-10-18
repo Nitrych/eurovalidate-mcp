@@ -77,6 +77,17 @@ Or install permanently: `pip install eurovalidate-mcp` → `eurovalidate-mcp`.
 mkdir -p ~/.claude/skills && cp -r skills/eu-business-validation ~/.claude/skills/
 ```
 
+## Claude plugin
+
+This repository is also a Claude plugin bundle (`.claude-plugin/plugin.json`): it installs the skill above plus this MCP server, pinned to `eurovalidate-mcp==0.1.1` and launched with `uvx`. On install you are asked for your EuroValidate API key; it is stored in Claude's secure credential store and passed only to the MCP server as `EUROVALIDATE_API_KEY`.
+
+## Data and network
+
+- The MCP server and the skill send **only the identifiers you ask to check** (VAT, IBAN, EORI, LEI numbers or a country code) to `https://api.eurovalidate.com`, together with your API key in the `X-API-Key` header. `check_service_status` sends no identifiers and needs no key.
+- Nothing else is read from your machine or sent anywhere else. No telemetry.
+- EuroValidate in turn queries public government services (EU VIES, EC EORI, UK HMRC, GLEIF) and caches results (VAT/EORI 24 h, IBAN 1 h). See the [privacy policy](https://eurovalidate.com/privacy.html) and [terms](https://eurovalidate.com/terms.html).
+- `uvx` downloads the `eurovalidate-mcp` package from PyPI on first run.
+
 ## Environment variables
 
 | Variable | Required | Default |

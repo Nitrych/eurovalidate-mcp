@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "eurovalidate": {
+      "command": "uvx",
+      "args": ["eurovalidate-mcp==0.1.1"],
+      "env": {
+        "EUROVALIDATE_API_KEY": "${user_config.api_key}"
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "eurovalidate",
+  "displayName": "EuroValidate",
+  "version": "0.1.1",
+  "description": "Validate EU/UK VAT numbers (VIES/HMRC), IBANs, EORI customs numbers and LEI company data, and fetch EU VAT rates — with confidence levels and graceful handling of VIES outages.",
+  "author": {
+    "name": "EuroValidate",
+    "email": "support@eurovalidate.com",
+    "url": "https://eurovalidate.com"
+  },
+  "homepage": "https://eurovalidate.com",
+  "repository": "https://github.com/Nitrych/eurovalidate-mcp",
+  "license": "MIT",
+  "keywords": ["vat", "vies", "iban", "eori", "lei", "kyb", "invoicing", "eu", "finance", "compliance"],
+  "icon": "./logo.png",
+  "documentationUrl": "https://api.eurovalidate.com/docs",
+  "supportUrl": "https://github.com/Nitrych/eurovalidate-mcp/issues",
+  "privacyPolicyUrl": "https://eurovalidate.com/privacy.html",
+  "termsOfServiceUrl": "https://eurovalidate.com/terms.html",
+  "userConfig": {
+    "api_key": {
+      "type": "string",
+      "title": "EuroValidate API key",
+      "description": "Free key (100 requests/month, no card) at https://eurovalidate.com",
+      "sensitive": true
+    }
+  }
+}

@@ -21,7 +21,7 @@ curl -s -H "X-API-Key: <user's EuroValidate key>" https://api.eurovalidate.com/v
 
 | Task | REST call |
 |---|---|
-| VAT number | `GET /v1/vat/{number}` (prefix optional; or `?country=DE`) |
+| VAT number | `GET /v1/vat/{number}` (prefix optional; or `?country=DE`). EU + XI + GB, plus NO (MVA register), AU (ABN/GST), CH (UID/MWST); CL, TR, IL, MX, CA, PH get a format/checksum check only |
 | IBAN | `GET /v1/iban/{iban}` (strip spaces) |
 | EORI | `GET /v1/eori/{number}` |
 | Company by VAT / LEI | `GET /v1/company/vat/{number}` · `GET /v1/company/lei/{lei}` |
@@ -36,6 +36,8 @@ curl -s -H "X-API-Key: <user's EuroValidate key>" https://api.eurovalidate.com/v
 
 - **Normalise input:** uppercase, strip spaces, dots and dashes. Accept `DE 811 569 869`, `de811569869`.
 - **Greece:** VIES uses `EL`, ISO uses `GR` — both are accepted; don't "correct" the user.
+- **Two-letter look-alikes:** Mexican RFCs (`ABC680524P76`) and some French keys start with letters; pass `?country=MX` / `?country=FR` so the letters aren't read as a country prefix.
+- **Non-EU registries:** NO `valid` means listed in the MVA register (`NO…MVA` accepted); AU `valid` means active ABN **and** GST-registered; CH checks the UID register's VAT status (`CHE-123.456.789 MWST` accepted). Each is a live official lookup with `source` set accordingly.
 - **Northern Ireland:** goods trade uses `XI` (EORI/VAT for goods), UK services use `GB`. Ask which one if it matters.
 - **Outside EU VAT territory:** Canary Islands, Ceuta, Melilla, Åland, Mount Athos, Büsingen, Heligoland. Monaco is treated as France, Isle of Man as UK. Don't validate these as EU VAT and say why.
 - **Spend calls carefully:** the free tier is 100 requests/month. Deduplicate lists, reuse results already obtained in the conversation, and use `/v1/batch` for more than ~20 VAT numbers.
@@ -49,6 +51,7 @@ Every response has `status` (or `valid` for IBAN) **and** `meta`:
 | `valid` | Registered for intra-EU VAT | Valid — show name/address if present |
 | `invalid` | Not registered (or never existed) | Invalid — **do not** apply reverse charge |
 | `unavailable` | Government service down, no cached answer | Unknown, retry later — **never report as invalid** |
+| `unverified` | Format and checksum pass but no official registry can be queried (CL, TR, IL, MX, CA, PH) | "Well-formed, not verified against a registry" — never call it valid; `format_valid` is also set |
 | `error` | Bad input / unexpected upstream error | Check the format; show `detail` |
 
 `meta.confidence`: `high` = live answer · `medium` = recent cache · `low` = stale cache served because upstream is down · `unknown` = no usable data. When confidence is `low`/`unknown`, call `check_service_status` and explain which country backend is down instead of guessing.
@@ -59,6 +62,7 @@ Every response has `status` (or `valid` for IBAN) **and** `meta`:
 - **Germany (DE) and Spain (ES) never return company name/address** over VIES (national data-protection law). If the user needs the name, call `lookup_company_by_vat` (GLEIF; works only if the company has an LEI).
 - Some other states return name but not address, or `---`. Report what came back; don't invent it.
 - IBAN `valid: true` means checksum + format + known bank code. It does **not** prove the account exists or belongs to the named company.
+- `source: checksum` (status `unverified`) is an offline check: Canada, Chile, Mexico, Turkey, Israel and the Philippines publish no API we may query, so treat the result as a sanity check, not proof.
 
 **Errors (RFC 7807: `type`, `title`, `status`, `detail`):** `401` → missing/invalid key · `422` → malformed input · `429` → monthly quota or rate limit reached: say so, respect `Retry-After`, don't retry in a loop · `5xx` → retry once, then report.
 
@@ -95,13 +99,15 @@ def check_vat(number: str) -> dict:
         return {"decision": "reverse_charge", "evidence": body}
     if status == "invalid" and conf in ("high", "medium"):
         return {"decision": "charge_vat", "evidence": body}
+    if status == "unverified":
+        return {"decision": "manual_review", "evidence": body}  # format only, no registry
     return {"decision": "pending", "evidence": body}  # unavailable / low confidence
 ```
 
 ## 5. Answer style
 
 - Lead with the verdict (valid / invalid / unknown right now), then company name, then caveats (cached, DE/ES no name, service down).
-- For lists, return a table: number · status · company · confidence · note.
+- For lists, return a table: number · status · company · confidence · note. Show `unverified` rows as "format OK, not verified", separate from `valid`.
 - Never print full IBANs or API keys in logs or generated code comments; mask IBANs as `DE89 **** **** 3000` in summaries.
 - This is a validity check, not tax advice. For reverse-charge decisions, note that the seller remains responsible for the final VAT treatment.
 

@@ -69,7 +69,7 @@ When the user is building checkout, onboarding/KYB, invoicing or ERP code:
 - **Never block a sale or signup because VIES is down.** Treat `unavailable` (or low confidence) as "pending": accept the order, charge VAT or flag for review, and re-validate later (`/v1/batch` or a scheduled job). Only `invalid` with `high`/`medium` confidence should reject a reverse-charge claim.
 - **Validate server-side**, never from the browser (the API key must stay secret).
 - **Store the evidence:** VAT number, `status`, `company_name`, `meta.source`, `meta.last_verified`, `request_id`. Tax authorities expect proof of validation at the time of supply.
-- **Time out and degrade:** 5–10 s client timeout; on timeout follow the "pending" path above.
+- **Time out and degrade:** use a ~15 s client timeout (some member states, e.g. CZ/DK/FR, take 9–11 s on a cache miss; repeat lookups are served from cache in milliseconds); on timeout follow the "pending" path above.
 - Read `X-RateLimit-Remaining` and back off on `429` using `Retry-After`.
 - Prefer the official SDKs when available: `pip install eurovalidate`, `npm i @eurovalidate/sdk`.
 
@@ -83,7 +83,7 @@ def check_vat(number: str) -> dict:
         r = httpx.get(
             f"https://api.eurovalidate.com/v1/vat/{number}",
             headers={"X-API-Key": os.environ["EUROVALIDATE_API_KEY"]},
-            timeout=8,
+            timeout=15,
         )
     except httpx.TimeoutException:
         return {"decision": "pending", "reason": "timeout"}

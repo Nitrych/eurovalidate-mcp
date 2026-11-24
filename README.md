@@ -1,5 +1,7 @@
 # EuroValidate MCP Server
 
+[![Nitrych/eurovalidate-mcp MCP server](https://glama.ai/mcp/servers/Nitrych/eurovalidate-mcp/badges/score.svg)](https://glama.ai/mcp/servers/Nitrych/eurovalidate-mcp)
+
 MCP ([Model Context Protocol](https://modelcontextprotocol.io)) server for [EuroValidate](https://eurovalidate.com) — lets Claude, ChatGPT and any MCP-capable agent **validate EU VAT numbers (VIES), IBANs and EORI customs numbers, look up company data, and fetch VAT rates** through one reliable REST API.
 
 ## Why
